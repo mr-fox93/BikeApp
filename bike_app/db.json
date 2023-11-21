@@ -1,0 +1,12 @@
+{
+  "motorcycles": [
+    {
+      "id": 1,
+      "make": "MarkaA",
+      "model": "ModelA",
+      "year": 2020,
+      "height": "800 mm",
+      "image": "url_do_zdjęcia_motocyklaA.jpg"
+    }
+  ]
+}
