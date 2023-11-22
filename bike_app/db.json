@@ -7,6 +7,22 @@
       "year": 2020,
       "height": "800 mm",
       "image": "url_do_zdjęcia_motocyklaA.jpg"
+    },
+    {
+      "id": 2,
+      "make": "MarkaB",
+      "model": "ModelA",
+      "year": 2008,
+      "height": "800 mm",
+      "image": "url_do_zdjęcia_motocyklaA.jpg"
+    },
+    {
+      "id": 3,
+      "make": "MarkaC",
+      "model": "ModelA",
+      "year": 1998,
+      "height": "800 mm",
+      "image": "url_do_zdjęcia_motocyklaA.jpg"
     }
   ]
 }
