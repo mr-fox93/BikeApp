@@ -1,10 +1,12 @@
 import "./App.css";
-import Motorcycles from "./components/Motorcycles";
+import BrandsComponent from "./components/BrandsComponent";
+//import Motorcycles from "./components/Motorcycles";
 
 function App() {
   return (
     <>
-      <Motorcycles />
+      {/* <Motorcycles /> */}
+      <BrandsComponent />
     </>
   );
 }
