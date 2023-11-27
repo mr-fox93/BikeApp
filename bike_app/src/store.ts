@@ -6,6 +6,8 @@ interface Brand {
   model: string;
   year: string;
   type: string;
+  seat_height: string;
+  power: string;
 }
 
 type State = {

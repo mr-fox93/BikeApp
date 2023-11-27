@@ -8,8 +8,9 @@ interface Brand {
   model: string;
   year: string;
   type: string;
+  seat_height: string;
+  power: string;
 }
-
 interface BrandsResponse {
   data: Brand[];
   nextPage: number;
@@ -23,7 +24,6 @@ const useGetAllBrands = () => {
     const response = await apiClient.get(
       `/motorcycles?make=${model}&offset=${pageParam}`
     );
-    //console.log(response.data);
     setModelYear(response.data);
     return { data: response.data, nextPage: pageParam + 30 };
   };
