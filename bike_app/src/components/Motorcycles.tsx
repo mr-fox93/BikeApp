@@ -1,10 +1,15 @@
 import useGetAllBrands from "../hooks/useGetAllBrands";
 import { brands } from "../data/brands.ts";
 import { useStore } from "../store.ts";
+import { useEffect } from "react";
 
 const Motorcycles = () => {
-  const { data, isLoading, error } = useGetAllBrands();
-  const { model, setModel, setMarkModel } = useStore();
+  const { data, isLoading, error, fetchNextPage } = useGetAllBrands();
+  const { model, setModel, setMarkModel, modelYear } = useStore();
+
+  useEffect(() => {
+    console.log(modelYear);
+  }, [modelYear]);
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error occurred</div>;
@@ -23,10 +28,13 @@ const Motorcycles = () => {
       <select onChange={(e) => setMarkModel(e.target.value)}>
         {models?.map((brand) => (
           <>
-            <option key={brand.model}>{brand.model}</option>
+            <option key={brand.model}>
+              {brand.model}-{brand.year}
+            </option>
           </>
         ))}
       </select>
+      <button onClick={() => fetchNextPage()}>LoadMore</button>
     </div>
   );
 };
