@@ -1,42 +1,21 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
-
-interface MotorcycleProps {
-  id: number;
-  make: string;
-  model: string;
-  year: number;
-  height: string;
-  image: string;
-}
+import useGetAllBrands from "../hooks/useGetAllBrands";
 
 const Motorcycles = () => {
-  const [motorcycles, setMotorcycles] = useState<MotorcycleProps[]>([]);
+  const { data, isLoading, error } = useGetAllBrands();
 
-  useEffect(() => {
-    const fetchMotorcycles = async () => {
-      try {
-        const response = await axios.get("http://localhost:3000/motorcycles");
-        console.log(response.data);
-        setMotorcycles(response.data);
-      } catch (error) {
-        console.error("Błąd przy pobieraniu danych:", error);
-      }
-    };
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error occurred</div>;
 
-    fetchMotorcycles();
-  }, []);
+  const brands = data?.pages.flatMap((page) => page.data);
 
   return (
     <div>
-      <h1>Lista Motocykli</h1>
-      <ul>
-        {motorcycles.map((motorcycle) => (
-          <li key={motorcycle.id}>
-            {motorcycle.make} - {motorcycle.height}
-          </li>
+      <h2>Brands</h2>
+      <select>
+        {brands?.map((brand) => (
+          <option key={brand.model}>{brand.model}</option>
         ))}
-      </ul>
+      </select>
     </div>
   );
 };
