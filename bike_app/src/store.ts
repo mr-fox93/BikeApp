@@ -1,16 +1,16 @@
 import { create } from "zustand";
-
-interface Motorcycle {
-  model: string;
-  make: string;
-}
+import { brands } from "./data/brands";
 
 type State = {
-  models: Motorcycle[];
-  setModels: (models: Motorcycle[]) => void;
+  model: string;
+  markModel: string;
+  setMarkModel: (markModel: string) => void;
+  setModel: (model: string) => void;
 };
 
 export const useStore = create<State>((set) => ({
-  models: [],
-  setModels: (models) => set({ models }),
+  model: brands[0],
+  markModel: "",
+  setModel: (model) => set({ model, markModel: "" }), // Reset markModel when model changes
+  setMarkModel: (markModel) => set({ markModel }),
 }));
