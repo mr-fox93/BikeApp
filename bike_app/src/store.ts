@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { brands } from "./data/brands";
 
 interface Brand {
+  id: number;
   make: string;
   model: string;
   year: string;
@@ -23,6 +24,7 @@ export const useStore = create<State>((set) => ({
   model: brands[0],
   markModel: "",
   modelYear: [],
+  //id: crypto.randomUUID(),
   setModelYear: (modelYear) => set({ modelYear }),
   setModel: (model) => set({ model, markModel: "" }),
   setMarkModel: (markModel) => set({ markModel }),
