@@ -1,16 +1,16 @@
 import apiClient from "../api-config";
 import { useInfiniteQuery } from "react-query";
 import { useStore } from "../store";
-//import { useEffect } from "react";
 
 interface Brand {
-  id: number;
+  id: string;
   make: string;
   model: string;
   year: string;
   type: string;
   seat_height: string;
   power: string;
+  total_weight: string;
 }
 interface BrandsResponse {
   data: Brand[];
@@ -21,7 +21,6 @@ const useGetAllBrands = () => {
   const { model, setModelYear } = useStore();
 
   const fetchAllBrands = async ({ pageParam = 0 }): Promise<BrandsResponse> => {
-    //if (!model) return { data: [], nextPage: 0 };
     const response = await apiClient.get(
       `/motorcycles?make=${model}&offset=${pageParam}`
     );
@@ -34,10 +33,6 @@ const useGetAllBrands = () => {
       nextPage: pageParam + 30,
     };
   };
-
-  // useEffect(() => {
-  //   console.log(modelYear);
-  // }, [modelYear]);
 
   return useInfiniteQuery<BrandsResponse>(["brands", model], fetchAllBrands, {
     getNextPageParam: (lastPage) => lastPage.nextPage,

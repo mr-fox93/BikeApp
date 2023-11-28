@@ -2,13 +2,14 @@ import { create } from "zustand";
 import { brands } from "./data/brands";
 
 interface Brand {
-  id: number;
+  id: string;
   make: string;
   model: string;
   year: string;
   type: string;
   seat_height: string;
   power: string;
+  total_weight: string;
 }
 
 type State = {
@@ -24,7 +25,6 @@ export const useStore = create<State>((set) => ({
   model: brands[0],
   markModel: "",
   modelYear: [],
-  //id: crypto.randomUUID(),
   setModelYear: (modelYear) => set({ modelYear }),
   setModel: (model) => set({ model, markModel: "" }),
   setMarkModel: (markModel) => set({ markModel }),
