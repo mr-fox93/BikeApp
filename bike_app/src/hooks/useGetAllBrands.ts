@@ -18,13 +18,18 @@ interface BrandsResponse {
 }
 
 const useGetAllBrands = () => {
-  const { model, setModelYear } = useStore();
+  const { model, setModelYear, yearSelect } = useStore();
 
   const fetchAllBrands = async ({ pageParam = 0 }): Promise<BrandsResponse> => {
-    const response = await apiClient.get(
-      `/motorcycles?make=${model}&offset=${pageParam}`
-    );
+    const params = {
+      make: model,
+      year: yearSelect,
+      offset: pageParam,
+    };
+
+    const response = await apiClient.get("/motorcycles", { params });
     setModelYear(response.data);
+
     return {
       data: response.data.map((motorcycle: Brand) => ({
         ...motorcycle,
@@ -34,9 +39,13 @@ const useGetAllBrands = () => {
     };
   };
 
-  return useInfiniteQuery<BrandsResponse>(["brands", model], fetchAllBrands, {
-    getNextPageParam: (lastPage) => lastPage.nextPage,
-  });
+  return useInfiniteQuery<BrandsResponse>(
+    ["brands", model, yearSelect],
+    fetchAllBrands,
+    {
+      getNextPageParam: (lastPage) => lastPage.nextPage,
+    }
+  );
 };
 
 export default useGetAllBrands;

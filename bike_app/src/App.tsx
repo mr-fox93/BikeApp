@@ -1,5 +1,5 @@
 //import "./App.css";
-import "semantic-ui-css/semantic.min.css";
+//import "semantic-ui-css/semantic.min.css";
 
 import Motorcycles from "./components/Motorcycles";
 
