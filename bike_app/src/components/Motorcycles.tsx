@@ -44,6 +44,7 @@ const Motorcycles = () => {
     setYourHeight,
     setBikeHeight,
     setHeightMessage,
+    yourHeight,
   } = useStore();
 
   useEffect(() => {
@@ -87,7 +88,7 @@ const Motorcycles = () => {
             </Text>
             <Menu>
               <MenuButton as={Button}>{model || "Select a Brand"}</MenuButton>
-              <MenuList>
+              <MenuList maxHeight="300px" overflowY="auto">
                 {brands?.map((brand) => (
                   <MenuItem key={brand} onClick={() => setModel(brand)}>
                     {brand}
@@ -135,7 +136,7 @@ const Motorcycles = () => {
                 <MenuButton as={Button}>
                   {yearSelect || "Select year"}
                 </MenuButton>
-                <MenuList>
+                <MenuList maxHeight="300px" overflowY="auto">
                   {years?.map((year) => (
                     <MenuItem key={year} onClick={() => setYearSelect(year)}>
                       {year}
@@ -155,6 +156,7 @@ const Motorcycles = () => {
       >
         <Input
           onChange={(e) => setYourHeight(e.target.value)}
+          value={yourHeight}
           placeholder="put your height in cm ..."
         />
         <CheckIsYouFit />

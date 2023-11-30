@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useStore } from "../store";
+import { Box, Badge } from "@chakra-ui/react";
 
 const CheckIsYouFit = () => {
   const { setHeightMessage, yourHeight, heightMessage, bikeHeigh } = useStore();
@@ -19,18 +20,27 @@ const CheckIsYouFit = () => {
     const legLengthMm = legLengthCm * 10;
     if (yourHeight.length <= 3 && seatHeightMm < 600) return;
     if (seatHeightMm <= legLengthMm + bothFeetMargin) {
-      setHeightMessage("obie nogi na ziemi");
+      setHeightMessage("Both feet on the ground");
     } else if (seatHeightMm <= legLengthMm + bothFeetMargin + 50) {
-      setHeightMessage("jedna noga na ziemi");
+      setHeightMessage("One foot on the ground");
     } else {
-      setHeightMessage("za niski");
+      setHeightMessage("Too short");
     }
   }, [yourHeight, setHeightMessage, seatHeightMm]);
 
   return (
-    <div>
-      <p>{heightMessage ? heightMessage : "Wprowadź swój wzrost"}</p>
-    </div>
+    <Box marginTop="20px" marginBottom="50px">
+      {heightMessage === "Both feet on the ground" ||
+      heightMessage === "One foot on the ground" ? (
+        <Badge colorScheme="green" fontSize="25">
+          {heightMessage}
+        </Badge>
+      ) : (
+        <Badge colorScheme="red" fontSize="25">
+          {heightMessage}{" "}
+        </Badge>
+      )}
+    </Box>
   );
 };
 
