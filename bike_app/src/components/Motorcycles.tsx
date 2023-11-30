@@ -1,176 +1,198 @@
 import useGetAllBrands from "../hooks/useGetAllBrands";
 import { brands } from "../data/brands.ts";
 import { useStore } from "../store.ts";
+import getBrandImage from "./brandImage";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-//import getBrandImage from "./brandImage";
-//import { useState } from "react";
+interface Brand {
+  id: string;
+  make: string;
+  model: string;
+  year: string;
+  type: string;
+  seat_height: string;
+  power: string;
+  total_weight: string;
+}
 
-//import { Menu, MenuButton, MenuList, MenuItem, Button } from "@chakra-ui/react";
+import {
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  Button,
+  Flex,
+  Text,
+  Image,
+  Box,
+  Input,
+} from "@chakra-ui/react";
+import { years } from "../data/years.ts";
+import { useEffect } from "react";
+import CheckIsYouFit from "./CheckIsYouFit.tsx";
 
 const Motorcycles = () => {
   const { data, isLoading, error, fetchNextPage, hasNextPage } =
     useGetAllBrands();
-  const { model, setModel } = useStore();
-  //const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const {
+    model,
+    setModel,
+    setMarkModel,
+    markModel,
+    yearSelect,
+    setYearSelect,
+    setYourHeight,
+    setBikeHeight,
+    setHeightMessage,
+  } = useStore();
 
-  // useEffect(() => {
-  //   console.log(currentIndex);
-  //   if (currentIndex >= 29) {
-  //     fetchNextPage();
-  //   }
-  // }, [currentIndex]);
+  useEffect(() => {
+    setYearSelect("");
+  }, [model, setYearSelect]);
+
+  useEffect(() => {
+    setYourHeight("");
+    setBikeHeight("");
+    setHeightMessage("");
+  }, [model, setYourHeight, setBikeHeight, setHeightMessage]);
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error occurred</div>;
 
   const models = data?.pages.flatMap((page) => page.data) ?? [];
-  //const filteredModels = models?.find((x) => x.model === markModel);
+  const filteredModels = models?.find((x) => x.id === markModel);
 
-  // let brandImage;
-  // if (filteredModels && filteredModels.make) {
-  //   brandImage = getBrandImage(filteredModels.make);
-  // }
+  let brandImage;
+  if (filteredModels && filteredModels.make) {
+    brandImage = getBrandImage(filteredModels.make);
+  }
+
+  const handleClick = (brand: Brand) => {
+    setMarkModel(brand.id);
+    setBikeHeight(brand.seat_height);
+  };
 
   return (
     <>
       <div>
-        <h2>Brands</h2>
-        <select value={model} onChange={(e) => setModel(e.target.value)}>
-          {brands?.map((x: string) => (
-            <option key={x}>{x}</option>
-          ))}
-        </select>
-        <InfiniteScroll
-          dataLength={models.length} // długość obecnej listy
-          next={fetchNextPage} // funkcja do ładowania kolejnej strony
-          hasMore={hasNextPage ?? false} // czy jest więcej stron do załadowania
-          loader={<h4>Loading...</h4>}
-          endMessage={
-            <p style={{ textAlign: "center" }}>
-              <b>Yay! You have seen it all</b>
-            </p>
-          }
+        <Flex
+          justifyContent="center"
+          marginTop="80px"
+          marginBottom="20px"
+          gap="10px"
         >
-          <table className="ui celled padded table">
-            <thead>
-              <tr>
-                <th>Index</th>
-                <th>Make</th>
-                <th>Model</th>
-                <th>Year</th>
-                <th>Type</th>
-                <th>Seat Height</th>
-                <th>Power</th>
-              </tr>
-            </thead>
-            <tbody>
-              {models?.map((item, index) => (
-                <tr>
-                  <td>{index}</td>
-                  <td>{item.make}</td>
-                  <td>{item.model}</td>
-                  <td>{item.year}</td>
-                  <td>{item.type}</td>
-                  <td>{item.seat_height}</td>
-                  <td>{item.power}</td>
-                </tr>
-              ))}
-            </tbody>
-            <tfoot>
-              <tr>
-                {/* <th colspan="6">
-        <!-- Tu możesz dodać paginację jeśli jest potrzebna -->
-      </th> */}
-              </tr>
-            </tfoot>
-          </table>
-        </InfiniteScroll>
+          <Flex flexDirection="column">
+            <Text marginBottom="2px" fontSize="15px">
+              Brand
+            </Text>
+            <Menu>
+              <MenuButton as={Button}>{model || "Select a Brand"}</MenuButton>
+              <MenuList>
+                {brands?.map((brand) => (
+                  <MenuItem key={brand} onClick={() => setModel(brand)}>
+                    {brand}
+                  </MenuItem>
+                ))}
+              </MenuList>
+            </Menu>
+          </Flex>
 
-        <button onClick={() => fetchNextPage()}>Next</button>
+          <Menu>
+            <Flex flexDirection="column">
+              <Text marginBottom="2px" fontSize="15px">
+                Model
+              </Text>
+              <MenuButton as={Button}>
+                {filteredModels?.model || "Select model"}
+              </MenuButton>
+              <MenuList>
+                <InfiniteScroll
+                  dataLength={models.length}
+                  next={fetchNextPage}
+                  hasMore={hasNextPage ?? false}
+                  loader={<h4>Loading...</h4>}
+                  endMessage={
+                    <p style={{ textAlign: "center" }}>
+                      <b>Yay! You have seen it all</b>
+                    </p>
+                  }
+                >
+                  {models?.map((brand) => (
+                    <MenuItem key={brand.id} onClick={() => handleClick(brand)}>
+                      {brand.model}
+                      {"-"}
+                      {brand.year}
+                    </MenuItem>
+                  ))}
+                </InfiniteScroll>
+              </MenuList>
+            </Flex>
+            <Flex flexDirection="column">
+              <Text marginBottom="2px" fontSize="15px">
+                Year
+              </Text>
+              <Menu>
+                <MenuButton as={Button}>
+                  {yearSelect || "Select year"}
+                </MenuButton>
+                <MenuList>
+                  {years?.map((year) => (
+                    <MenuItem key={year} onClick={() => setYearSelect(year)}>
+                      {year}
+                    </MenuItem>
+                  ))}
+                </MenuList>
+              </Menu>
+            </Flex>
+          </Menu>
+        </Flex>
       </div>
+      <Flex
+        direction="column"
+        alignItems="center"
+        justifyContent="center"
+        p="20px"
+      >
+        <Input
+          onChange={(e) => setYourHeight(e.target.value)}
+          placeholder="put your height in cm ..."
+        />
+        <CheckIsYouFit />
+
+        {brandImage && (
+          <Image
+            width="150px"
+            height="90px"
+            src={brandImage}
+            alt={filteredModels?.make}
+            marginBottom="20px"
+          />
+        )}
+        <Flex
+          direction={{ base: "column", md: "row" }}
+          wrap="wrap"
+          justifyContent="center"
+          maxWidth="800px"
+          gap="20px"
+        >
+          <Box>
+            <Text>Make: {filteredModels?.make}</Text>
+            <Text>Model: {filteredModels?.model}</Text>
+            <Text>Type: {filteredModels?.type}</Text>
+            <Text>Year: {filteredModels?.year}</Text>
+          </Box>
+          <Box>
+            <Text>Seat Height: {filteredModels?.seat_height}</Text>
+            <Text>
+              Power: {filteredModels?.power ? filteredModels.power : "NaN"}
+            </Text>
+            <Text>Weight: {filteredModels?.total_weight}</Text>
+            <Text>Displacement: data in future</Text>
+          </Box>
+        </Flex>
+      </Flex>
     </>
   );
 };
 
 export default Motorcycles;
-
-// import useGetAllBrands from "../hooks/useGetAllBrands";
-// import { brands } from "../data/brands.ts";
-// import { useStore } from "../store.ts";
-// import getBrandImage from "./brandImage";
-// //import { useState } from "react";
-
-// import { Menu, MenuButton, MenuList, MenuItem, Button } from "@chakra-ui/react";
-
-// const Motorcycles = () => {
-//   const { data, isLoading, error, fetchNextPage } = useGetAllBrands();
-//   const { model, setModel, setMarkModel, markModel } = useStore();
-//   //const [currentIndex, setCurrentIndex] = useState<number>(0);
-
-//   // useEffect(() => {
-//   //   console.log(currentIndex);
-//   //   if (currentIndex >= 29) {
-//   //     fetchNextPage();
-//   //   }
-//   // }, [currentIndex]);
-
-//   if (isLoading) return <div>Loading...</div>;
-//   if (error) return <div>Error occurred</div>;
-
-//   const models = data?.pages.flatMap((page) => page.data);
-//   const filteredModels = models?.find((x) => x.model === markModel);
-
-//   let brandImage;
-//   if (filteredModels && filteredModels.make) {
-//     brandImage = getBrandImage(filteredModels.make);
-//   }
-
-//   return (
-//     <>
-//       <div>
-//         <h2>Brands</h2>
-//         <select value={model} onChange={(e) => setModel(e.target.value)}>
-//           {brands?.map((x: string) => (
-//             <option key={x}>{x}</option>
-//           ))}
-//         </select>
-
-//         <Menu>
-//           <MenuButton as={Button}>{markModel || "Select model.."}</MenuButton>
-//           <MenuList>
-//             {models?.map((brand) => (
-//               <MenuItem
-//                 key={brand.id}
-//                 onClick={() => setMarkModel(brand.model)}
-//                 //onMouseEnter={() => setCurrentIndex(index)}
-//               >
-//                 {brand.model}
-//               </MenuItem>
-//             ))}
-//           </MenuList>
-//         </Menu>
-
-//         <button onClick={() => fetchNextPage()}>Next</button>
-//       </div>
-//       <div>
-//         <h2>Models</h2>
-//         {brandImage && (
-//           <img
-//             style={{ width: "150px", height: "90px" }}
-//             src={brandImage}
-//             alt={filteredModels?.make}
-//           />
-//         )}
-//         <p>Make: {filteredModels?.make}</p>
-//         <p>Model: {filteredModels?.model}</p>
-//         <p>Type: {filteredModels?.type}</p>
-//         <p>Year: {filteredModels?.year}</p>
-//         <p>Seat Height: {filteredModels?.seat_height}</p>
-//         <p>Power: {filteredModels?.power ? filteredModels.power : "NaN"}</p>
-//       </div>
-//     </>
-//   );
-// };
-
-// export default Motorcycles;

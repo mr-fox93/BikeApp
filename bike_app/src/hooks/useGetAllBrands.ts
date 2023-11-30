@@ -1,16 +1,16 @@
 import apiClient from "../api-config";
 import { useInfiniteQuery } from "react-query";
 import { useStore } from "../store";
-//import { useEffect } from "react";
 
 interface Brand {
-  id: number;
+  id: string;
   make: string;
   model: string;
   year: string;
   type: string;
   seat_height: string;
   power: string;
+  total_weight: string;
 }
 interface BrandsResponse {
   data: Brand[];
@@ -18,14 +18,18 @@ interface BrandsResponse {
 }
 
 const useGetAllBrands = () => {
-  const { model, setModelYear } = useStore();
+  const { model, setModelYear, yearSelect } = useStore();
 
   const fetchAllBrands = async ({ pageParam = 0 }): Promise<BrandsResponse> => {
-    //if (!model) return { data: [], nextPage: 0 };
-    const response = await apiClient.get(
-      `/motorcycles?make=${model}&offset=${pageParam}`
-    );
+    const params = {
+      make: model,
+      year: yearSelect,
+      offset: pageParam,
+    };
+
+    const response = await apiClient.get("/motorcycles", { params });
     setModelYear(response.data);
+
     return {
       data: response.data.map((motorcycle: Brand) => ({
         ...motorcycle,
@@ -35,13 +39,13 @@ const useGetAllBrands = () => {
     };
   };
 
-  // useEffect(() => {
-  //   console.log(modelYear);
-  // }, [modelYear]);
-
-  return useInfiniteQuery<BrandsResponse>(["brands", model], fetchAllBrands, {
-    getNextPageParam: (lastPage) => lastPage.nextPage,
-  });
+  return useInfiniteQuery<BrandsResponse>(
+    ["brands", model, yearSelect],
+    fetchAllBrands,
+    {
+      getNextPageParam: (lastPage) => lastPage.nextPage,
+    }
+  );
 };
 
 export default useGetAllBrands;
